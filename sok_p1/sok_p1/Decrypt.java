@@ -37,7 +37,6 @@ public class Decrypt {
 			for(int i = 0; i < 4; i++)
 			{
 				userCode[i] = (userCode[i] + 3) % 10;
-				
 			}
 
 			
