@@ -22,9 +22,12 @@ public class Take_Poll {
 		
 		Scanner scnr = new Scanner(System.in);
 		
-		String [] topics = {"Games", "Anime", "Food", "Sports", "Economy"}; //initialize topics
+		String [] topics = {"Healthcare", "Gun Control", "Food Shortage", "Video Games", "Economy"};
 		int[][] responses = new int[5][10];
-		int userResponse;
+		int[] average = new int[5];
+		int userResponse, pollCounter = 0, holder = 0;
+		int highPoint = 0, lowPoint = 0;
+		String highTopic = null, lowTopic = null;
 		boolean run = true;
 		
 		System.out.println("On a scale of 1(least important) to 10(most important), how would you rate these topics? ");
@@ -71,10 +74,11 @@ public class Take_Poll {
 					break;
 				default:
 					System.out.println("Invalid rating.");
-					i = 5;
+					i--;				//resets increment so user can input proper rating without skipping a topic
 					break;
 				}
 			}
+			
 			System.out.println("Take poll again?(Enter -1 to quit): ");
 			userResponse = scnr.nextInt();		//reusing variable
 			
@@ -83,8 +87,35 @@ public class Take_Poll {
 				run = false;	//ends while loop
 			}
 		}
+		//calculate avg for each topic
+		for (int l = 0; l < 5; l++)
+		{
+			for (int m = 0; m < 10; m++)
+			{
+				//hold value from responses indexes to pass into avg array calculation
+				holder = responses[l][m];
+				pollCounter += holder;		//used as a total count for topic to help calculate avg
+				average[l] += holder * (m + 1);
+			}
+			
+			if (average[l] > highPoint)
+			{
+				highPoint = average[l];
+				highTopic = topics[l];
+			}
+			
+			if (lowPoint == 0 || lowPoint > average[l])
+			{
+				lowPoint = average[l];
+				lowTopic = topics[l];
+			}
+			
+			average[l] /= (double)pollCounter; //actual avg being set, cast double for accuracy
+			pollCounter = 0;				//reset pollCounter for next average index
+		}
+		
 		//print ratings on top
-		System.out.printf("Rating:\t1\t2\t3\t4\t5\t6\t7\t8\t9\t10\n");
+		System.out.printf("Rating:\t\t1\t2\t3\t4\t5\t6\t7\t8\t9\t10\tAverage\n");
 		
 		//print topics
 		for (int j = 0; j < 5; j++)
@@ -94,10 +125,10 @@ public class Take_Poll {
 			{
 				System.out.printf("\t%d", responses[j][k]);
 			}
-			System.out.printf("\n");
+			System.out.printf("\t%d\n", average[j]);
 		}
-		
-		
+		System.out.printf("The topic with the highest point total of %d is %s.\n", highPoint, highTopic);
+		System.out.printf("The topic with the lowest point total of %d is %s.\n", lowPoint, lowTopic);
 		scnr.close();
 	}
 
